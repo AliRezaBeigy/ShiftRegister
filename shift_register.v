@@ -1,23 +1,28 @@
-module ShiftRegister(input wire C, input wire L, input wire RTL, input wire [3:0] D, output wire [3:0] Q, output wire [3:0] nQ);
-	reg [3:0] Dm;
+module ShiftRegister(C, L, RTL, D, Q, nQ);
+	parameter n = 4;
+	reg [n - 1:0] Dm;
+	input wire C, L, RTL;
+	input wire [n - 1:0] D;
+	output wire [n - 1:0] Q;
+	output wire [n - 1:0] nQ;
 
 	always@(posedge C or posedge L)
 	begin
 		if(L == 0)
 		begin
 			if(RTL == 1)
-				assign Dm = {Q[2], Q[1], Q[0], D[0]};
+				assign Dm = {Q[n - 2:0], D[0]};
 			else
-				assign Dm = {D[3], Q[3], Q[2], Q[1]};
+				assign Dm = {D[n - 1], Q[n - 1:1]};
 		end
 		else
 		begin
-			assign Dm = {D[3], D[2], D[1], D[0]};
+			assign Dm = {D[n - 1:0]};
 		end
 	end
-	
+
 	genvar i;
-	generate for (i = 0; i < 4; i = i + 1)
+	generate for (i = 0; i < n; i = i + 1)
 		DFlipFlop dff(.C(C), .D(Dm[i]), .Q(Q[i]), .nQ(nQ[i]));
 	endgenerate
 endmodule
