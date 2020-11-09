@@ -1,14 +1,16 @@
-module ShiftRegister(C, L, RTL, D, Q, nQ);
+module ShiftRegister(C, L, RTL, R, D, Q, nQ);
 	parameter n = 4;
 	reg [n - 1:0] Dm;
-	input wire C, L, RTL;
+	input wire C, L, RTL, R;
 	input wire [n - 1:0] D;
 	output wire [n - 1:0] Q;
 	output wire [n - 1:0] nQ;
 
 	always@(posedge C or posedge L)
 	begin
-		if(L == 0)
+		if(R)
+		    assign Dm = 0;
+		else if(L == 0)
 		begin
 			if(RTL == 1)
 				assign Dm = {Q[n - 2:0], D[0]};
